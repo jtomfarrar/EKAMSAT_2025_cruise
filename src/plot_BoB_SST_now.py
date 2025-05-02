@@ -57,6 +57,28 @@ filename = os.path.join(data_dir, os.path.basename(url))
 if not os.path.exists(filename):
     import urllib.request
     urllib.request.urlretrieve(url, filename)
+else: # check if the file is older than 0.5 days
+    # Get the last modified time of the file
+    import datetime
+    import time
+    import urllib.request
+    # Get the last modified time of the file
+    last_modified_time = os.path.getmtime(filename)
+    # Convert the last modified time to a human-readable format
+    last_modified_time = datetime.datetime.fromtimestamp(last_modified_time)
+    print("Last modified time:", last_modified_time)
+    print("Time now:", datetime.datetime.now())
+    # compute age of file:
+    age = datetime.datetime.now() - last_modified_time
+    print("Age of file:", age)
+    # If the file is older than 0.5 days, download it again
+    if age.total_seconds() > 43200:  # 0.5 days in seconds
+        print("File is older than 0.5 days, downloading again")
+        urllib.request.urlretrieve(url, filename)
+
+
+
+# %%
 
 # Nominal location: 7°57'47.83" N  87°38'25.56" E
 mooring = dict(
@@ -81,20 +103,7 @@ else:
     xmin, xmax = (70,100)
     ymin, ymax = (0, 25)
 # %%
-if not os.path.isfile('../data/external/aviso.nc'):
-    print('Need to download the data')
-    ds_ssh = copernicusmarine.open_dataset(
-        dataset_id = "cmems_obs-sl_glo_phy-ssh_nrt_allsat-l4-duacs-0.25deg_P1D",
-        minimum_longitude = xmin, maximum_longitude = xmax,
-        minimum_latitude = ymin, maximum_latitude = ymax,
-        minimum_depth = 0., maximum_depth = 10., 
-        start_datetime = "2025-04-15 00:00:00",    
-        end_datetime = "2025-05-15 23:59:59", 
-        variables = ['adt', 'sla', 'ugos', 'vgos'], 
-        )
-    ds.to_netcdf('../data/external/aviso.nc')
-else:
-    ds_ssh = xr.open_dataset('../data/external/aviso.nc')
+ds_ssh = xr.open_dataset('../data/external/aviso.nc')
 
 # %%
 def add_vel_quiver(tind,ax=plt.gca()):

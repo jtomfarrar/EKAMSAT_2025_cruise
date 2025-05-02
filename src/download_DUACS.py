@@ -116,7 +116,11 @@ else:
         print('New data is more recent, appending to the old file')
         # append the new data to the old dataset
         ds = xr.concat([ds, ds_test], dim='time')
-        # ds.to_netcdf('../data/external/aviso.nc')
+        # Check if the ugos at the last time is all nans
+        if np.all(np.isnan(ds.ugos.isel(time=-1))):
+            print('Last time is all nans, removing it')
+            ds = ds.isel(time=slice(0, -1))
+        ds.to_netcdf('../data/external/aviso.nc')
     else:
         print('Existing data is up to date, no need to append.')
         # ds_test.to_netcdf('../data/external/aviso.nc', mode='a')
