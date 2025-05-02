@@ -3,6 +3,8 @@
 # Data files
 *.nc
 *.mat
+*.zip
+eez*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
