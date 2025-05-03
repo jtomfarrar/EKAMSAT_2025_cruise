@@ -198,7 +198,7 @@ plt.savefig(__figdir__+'SST_WG_array_example.' +plotfiletype,**savefig_args)
 # https://www.marineregions.org/downloads.php#eez
 
 EEZ_file = '../data/external/World_EEZ_v12_20231025.zip'
-if not os.path.exists(EEZ_file):
+if not os.path.isfile(EEZ_file):
     import urllib.request
     url = 'https://www.marineregions.org/downloads.php#eez'
     urllib.request.urlretrieve(url, EEZ_file)
@@ -303,8 +303,6 @@ plt.show()
 if savefig:
     outfile2 = 'Delta_SST_UV_map_' + t1.replace(' ', '_')
     plt.savefig(__figdir__ + outfile2 + '.' + plotfiletype, **savefig_args)
-
-
 
 
 # %%
