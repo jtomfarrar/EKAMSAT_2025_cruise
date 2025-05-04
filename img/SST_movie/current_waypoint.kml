@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2">
+    <Document id="168">
+        <Style id="171">
+            <IconStyle id="172">
+                <color>ff0000ff</color>
+                <colorMode>normal</colorMode>
+                <scale>1</scale>
+                <heading>0</heading>
+                <Icon id="173">
+                    <href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+                </Icon>
+            </IconStyle>
+        </Style>
+        <Placemark id="170">
+            <name>Waypoint</name>
+            <styleUrl>#171</styleUrl>
+            <Point id="169">
+                <coordinates>86.577,13.8005,0.0</coordinates>
+            </Point>
+        </Placemark>
+    </Document>
+</kml>

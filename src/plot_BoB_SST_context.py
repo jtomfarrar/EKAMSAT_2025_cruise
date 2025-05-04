@@ -377,3 +377,33 @@ plt.legend([site_2024, bd[0], next_wpt[0], tgt[0]], ['2024 site', 'BD/RAMA moori
 
 
 # %%
+# Export the current waypoint to a KML file; this differs from the other function 
+# because it only does the waypoints
+import simplekml
+def waypoints_to_kml(kml_name, wpt):
+    """
+    Create a KML file with waypoints.
+
+    Parameters:
+    - kml_name: Name of the KML file to save.
+    - wpt: Dictionary containing 'lon' and 'lat' for the waypoints.
+    """
+    
+    # Create a KML object
+    kml = simplekml.Kml()
+
+    # Add waypoints as points
+    for lon, lat in zip(wpt['lon'], wpt['lat']):
+        pnt = kml.newpoint(name="Waypoint", coords=[(lon, lat)])
+        pnt.style.iconstyle.icon.href = "http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png"
+        pnt.style.iconstyle.color = simplekml.Color.red
+
+    # Save the KML file
+    kml.save(kml_name + '.kml')
+    print(f"KML file '{kml_name}.kml' created successfully.")
+
+# %%
+# Create a KML file for the current waypoint
+waypoints_to_kml(kml_name=__figdir__ + 'current_waypoint', wpt=wpt)
+
+# %%
