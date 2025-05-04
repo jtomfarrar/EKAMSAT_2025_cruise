@@ -157,3 +157,26 @@ def create_kml_file(kml_name, plot_file, overlay_name, pts_lon, pts_lat, BD, moo
     # Save the KML file
     kml.save(kml_name + '.kml')
     print(f"KML file '{kml_name}.kml' created successfully.")
+
+
+def waypoints_to_kml(kml_name, wpt):
+    """
+    Create a KML file with waypoints.
+
+    Parameters:
+    - kml_name: Name of the KML file to save.
+    - wpt: Dictionary containing 'lon' and 'lat' for the waypoints.
+    """
+    
+    # Create a KML object
+    kml = simplekml.Kml()
+
+    # Add waypoints as points
+    for lon, lat in zip(wpt['lon'], wpt['lat']):
+        pnt = kml.newpoint(name="Waypoint", coords=[(lon, lat)])
+        pnt.style.iconstyle.icon.href = "http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png"
+        pnt.style.iconstyle.color = simplekml.Color.red
+
+    # Save the KML file
+    kml.save(kml_name + '.kml')
+    print(f"KML file '{kml_name}.kml' created successfully.")
