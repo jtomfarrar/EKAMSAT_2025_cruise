@@ -5,6 +5,7 @@
 *.mat
 *.zip
 eez*
+./data/external/World_EEZ_v12_20231025
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

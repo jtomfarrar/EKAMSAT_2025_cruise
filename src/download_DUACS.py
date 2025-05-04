@@ -24,9 +24,7 @@ import pandas as pd
 
 # import cftime
 
-# %%
-# Run the following line to create the login file for Copernicus Marine Service
-# copernicusmarine.login()
+
 
 
 # %%
@@ -62,24 +60,9 @@ else:
     levels = np.linspace(-.3,.3,11)
 
 # %%
-# A shell script using the motuclient, https://help.marine.copernicus.eu/en/articles/4796533-what-are-the-motu-client-motuclient-and-python-requirements
-# Shell script from Ben Greenwood (email 9/21/2022)
-'''
-echo "$(date -u) download_aviso.sh" >> ./aviso_download.log
+# Run the following line to create the login file for Copernicus Marine Service
+# copernicusmarine.login()
 
-start="2022-09-15 00:00:00"
-end="$(date -u "+%Y-%m-%d %H:%M:%S")"
-out_dir='./'
-
-# download data
-motuclient --motu https://nrt.cmems-du.eu/motu-web/Motu --service-id SEALEVEL_GLO_PHY_L4_NRT_OBSERVATIONS_008_046-TDS --product-id dataset-duacs-nrt-global-merged-allsat-phy-l4 --longitude-min -140 --longitude-max -120 --latitude-min 34 --latitude-max 43 --date-min "$start" --date-max "$end" --variable adt --variable err_ugosa --variable err_vgosa --variable sla --variable ugos --variable ugosa --variable vgos --variable vgosa --out-dir "$out_dir" --out-name aviso.nc --user ***** --pwd *****
-'''
-
-'''
-if not os.path.exists('../data/external/aviso.nc'):
-    ! bash ~/Python/download_aviso.sh
-    ! cp ./aviso.nc ../data/external/aviso.nc
-'''
 # %%
 if not os.path.exists('../data/external/aviso.nc'):
     print('Need to download the data')
@@ -88,7 +71,7 @@ if not os.path.exists('../data/external/aviso.nc'):
         minimum_longitude = xmin, maximum_longitude = xmax,
         minimum_latitude = ymin, maximum_latitude = ymax,
         minimum_depth = 0., maximum_depth = 10., 
-        start_datetime = "2025-04-21 00:00:00",    
+        start_datetime = "2025-03-01 00:00:00",    
         end_datetime = "2025-05-15 23:59:59", 
         variables = ['adt', 'sla', 'ugos', 'vgos'], 
         )

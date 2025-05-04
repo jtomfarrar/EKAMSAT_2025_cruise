@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2">
+    <Document id="1">
+        <Style id="7">
+            <IconStyle id="8">
+                <color>ffff00ff</color>
+                <colorMode>normal</colorMode>
+                <scale>1</scale>
+                <heading>0</heading>
+                <Icon id="9">
+                    <href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+                </Icon>
+            </IconStyle>
+        </Style>
+        <Style id="12">
+            <IconStyle id="13">
+                <color>ffff00ff</color>
+                <colorMode>normal</colorMode>
+                <scale>1</scale>
+                <heading>0</heading>
+                <Icon id="14">
+                    <href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+                </Icon>
+            </IconStyle>
+        </Style>
+        <Style id="17">
+            <IconStyle id="18">
+                <color>ffff00ff</color>
+                <colorMode>normal</colorMode>
+                <scale>1</scale>
+                <heading>0</heading>
+                <Icon id="19">
+                    <href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+                </Icon>
+            </IconStyle>
+        </Style>
+        <Style id="22">
+            <IconStyle id="23">
+                <color>ffff00ff</color>
+                <colorMode>normal</colorMode>
+                <scale>1</scale>
+                <heading>0</heading>
+                <Icon id="24">
+                    <href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+                </Icon>
+            </IconStyle>
+        </Style>
+        <Style id="27">
+            <IconStyle id="28">
+                <color>ffff00ff</color>
+                <colorMode>normal</colorMode>
+                <scale>1</scale>
+                <heading>0</heading>
+                <Icon id="29">
+                    <href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+                </Icon>
+            </IconStyle>
+        </Style>
+        <Style id="32">
+            <IconStyle id="33">
+                <color>ffff00ff</color>
+                <colorMode>normal</colorMode>
+                <scale>1</scale>
+                <heading>0</heading>
+                <Icon id="34">
+                    <href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+                </Icon>
+            </IconStyle>
+        </Style>
+        <Style id="37">
+            <IconStyle id="38">
+                <color>ff000000</color>
+                <colorMode>normal</colorMode>
+                <scale>1</scale>
+                <heading>0</heading>
+                <Icon id="39">
+                    <href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+                </Icon>
+            </IconStyle>
+        </Style>
+        <GroundOverlay id="2">
+            <name>SST_UV</name>
+            <Icon id="3">
+                <href>KML_SST_UV_map_2025-05-02.png</href>
+            </Icon>
+            <LatLonBox>
+                <north>20</north>
+                <south>5</south>
+                <east>95</east>
+                <west>80</west>
+            </LatLonBox>
+        </GroundOverlay>
+        <Placemark id="6">
+            <name>BD08</name>
+            <styleUrl>#7</styleUrl>
+            <Point id="5">
+                <coordinates>89.175,17.817,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="11">
+            <name>BD09</name>
+            <styleUrl>#12</styleUrl>
+            <Point id="10">
+                <coordinates>89.124,17.46,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="16">
+            <name>BD10</name>
+            <styleUrl>#17</styleUrl>
+            <Point id="15">
+                <coordinates>87.991,16.322,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="21">
+            <name>BD13</name>
+            <styleUrl>#22</styleUrl>
+            <Point id="20">
+                <coordinates>87.0,13.99,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="26">
+            <name>RAMA</name>
+            <styleUrl>#27</styleUrl>
+            <Point id="25">
+                <coordinates>89.04,15.04,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="31">
+            <name>RAMA</name>
+            <styleUrl>#32</styleUrl>
+            <Point id="30">
+                <coordinates>88.51,12.01,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="36">
+            <name>2024 Site</name>
+            <styleUrl>#37</styleUrl>
+            <Point id="35">
+                <coordinates>86,12,0.0</coordinates>
+            </Point>
+        </Placemark>
+    </Document>
+</kml>
