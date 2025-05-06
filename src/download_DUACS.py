@@ -60,7 +60,7 @@ else:
     levels = np.linspace(-.3,.3,11)
 
 # %%
-# Run the following line to create the login file for Copernicus Marine Service
+# Run the following line once to create the login file for Copernicus Marine Service
 # copernicusmarine.login()
 
 # %%

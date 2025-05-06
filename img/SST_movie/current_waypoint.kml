@@ -1,22 +1,94 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2">
-    <Document id="168">
-        <Style id="171">
-            <IconStyle id="172">
+    <Document id="81">
+        <Style id="84">
+            <IconStyle id="85">
                 <color>ff0000ff</color>
                 <colorMode>normal</colorMode>
                 <scale>1</scale>
                 <heading>0</heading>
-                <Icon id="173">
+                <Icon id="86">
                     <href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
                 </Icon>
             </IconStyle>
         </Style>
-        <Placemark id="170">
+        <Style id="89">
+            <IconStyle id="90">
+                <color>ff0000ff</color>
+                <colorMode>normal</colorMode>
+                <scale>1</scale>
+                <heading>0</heading>
+                <Icon id="91">
+                    <href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+                </Icon>
+            </IconStyle>
+        </Style>
+        <Style id="94">
+            <IconStyle id="95">
+                <color>ff0000ff</color>
+                <colorMode>normal</colorMode>
+                <scale>1</scale>
+                <heading>0</heading>
+                <Icon id="96">
+                    <href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+                </Icon>
+            </IconStyle>
+        </Style>
+        <Style id="99">
+            <IconStyle id="100">
+                <color>ff0000ff</color>
+                <colorMode>normal</colorMode>
+                <scale>1</scale>
+                <heading>0</heading>
+                <Icon id="101">
+                    <href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+                </Icon>
+            </IconStyle>
+        </Style>
+        <Style id="104">
+            <IconStyle id="105">
+                <color>ff0000ff</color>
+                <colorMode>normal</colorMode>
+                <scale>1</scale>
+                <heading>0</heading>
+                <Icon id="106">
+                    <href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
+                </Icon>
+            </IconStyle>
+        </Style>
+        <Placemark id="83">
             <name>Waypoint</name>
-            <styleUrl>#171</styleUrl>
-            <Point id="169">
-                <coordinates>86.577,13.8005,0.0</coordinates>
+            <styleUrl>#84</styleUrl>
+            <Point id="82">
+                <coordinates>88.83,12.33,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="88">
+            <name>Waypoint</name>
+            <styleUrl>#89</styleUrl>
+            <Point id="87">
+                <coordinates>88.83,15,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="93">
+            <name>Waypoint</name>
+            <styleUrl>#94</styleUrl>
+            <Point id="92">
+                <coordinates>86.48,13.87,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="98">
+            <name>Waypoint</name>
+            <styleUrl>#99</styleUrl>
+            <Point id="97">
+                <coordinates>86.5,13.32,0.0</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="103">
+            <name>Waypoint</name>
+            <styleUrl>#104</styleUrl>
+            <Point id="102">
+                <coordinates>88.83,14.47,0.0</coordinates>
             </Point>
         </Placemark>
     </Document>
