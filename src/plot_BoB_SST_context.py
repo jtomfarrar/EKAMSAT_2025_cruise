@@ -89,20 +89,55 @@ mooring = dict(
     lon = [86],
     lat = [12])
 
+NRL_target = dict(lon=[87], lat=[13.5])
+
 # %%
-# Current first survey waypoint
-# OLD: wpt = dict(lon=[86 + 34.62/60], lat=[13 + 48.03/60])
-#  13.875100°   86.482300°
-#  13.323279°   86.501382°
-#  14.466317°   88.833707°  
-wpt = dict(lon=[88.83, 88.83, 86.48, 86.50, 88.83], lat=[12.33, 15, 13.87, 13.32, 14.47])
-  
 # Convert waypoints from decimal degrees to degrees and decimal minutes
 def decimal_to_dms(value, direction_positive, direction_negative):
     degrees = int(value)
     minutes = (value - degrees) * 60
     direction = direction_positive if value >= 0 else direction_negative
     return f"{degrees}° {minutes:.2f}' {direction}"
+# Current first survey waypoint
+# OLD: wpt = dict(lon=[86 + 34.62/60], lat=[13 + 48.03/60])
+#  13.875100°   86.482300°
+#  13.323279°   86.501382°
+#  Not doing: 14.466317°   88.833707°  
+#  12.80°   86.50°
+#  12.30°   86.50°
+#  12.00°   88.50°
+
+#  13.172930°   87.664760°
+#  13.170381°   87.510335°
+#  13.315435°   87.510009°
+#  13.313899°   87.663535°
+# make a lon/lat dictionary of the waypoints above, rounding to 4 decimal places
+# First square aroung WGs on May 8 midnight -8am LT:
+# uctd_wpt = dict(lon=[87.6648, 87.5103, 87.5100, 87.6635], lat=[13.1729, 13.1704, 13.3154, 13.3139])
+# For May 8, 1000-1800 LT
+#  13.276094°   87.529407°
+#  13.275738°   87.677471°
+#  13.132261°   87.676757°
+#  13.132260°   87.530091°
+uctd_wpt = dict(lon=[87.5294, 87.6775, 87.6768, 87.5301], lat=[13.2761, 13.2757, 13.1323, 13.1323]) 
+# G:\Shared drives\AirSeaLab_Shared\ASTRAL_2025\PAYLOAD\MAT
+# IDA.PLD2_TAB1['lon']
+
+# Drifter waypoints for May 9
+# 86°E, 12°N (DWSD and SG181)\\
+# 86°E 11.5°N (DWSBWD)\\
+# 86°E, 11°N (DWSD)\\
+# 86.5°E, 11°N (DWSD)\\
+# 86.5°E, 11.5°N (DWSD)\\
+# 86.5°E, 12°N (DWSD)\\
+
+wpt_drifters_May9 = dict(lon=[86, 86, 86, 86.5, 86.5, 86.5], lat=[12, 11.5, 11, 11, 11.5, 12])
+
+
+CTD_waypoint= dict(lon=[87.511854], lat=[13.233402])
+
+# Add new waypoints to wpt
+wpt = dict(lon=[88.83, 88.83, 86.48, 86.50, 86.50, 86.50, 87.5, 88.5], lat=[12.33, 15, 13.87, 13.32, 12.80, 12.30, 13.25, 12.0])
 
 wpt_dms = [
     f"{decimal_to_dms(lat, 'N', 'S')}, {decimal_to_dms(lon, 'E', 'W')}"
@@ -113,8 +148,30 @@ print("Waypoints in DMS format (lat, lon):")
 for waypoint in wpt_dms:
     print(waypoint)
 
+wpt_uctd_dms = [
+    f"{decimal_to_dms(lat, 'N', 'S')}, {decimal_to_dms(lon, 'E', 'W')}"
+    for lat, lon in zip(uctd_wpt['lat'], uctd_wpt['lon'])
+]
 
+print("UCTD waypoints in DMS format (lat, lon):")
+for waypoint in wpt_uctd_dms:
+    print(waypoint)
 
+wpt_CTD_dms = [
+    f"{decimal_to_dms(lat, 'N', 'S')}, {decimal_to_dms(lon, 'E', 'W')}"
+    for lat, lon in zip(CTD_waypoint['lat'], CTD_waypoint['lon'])
+]
+print("CTD waypoints in DMS format (lat, lon):")
+for waypoint in wpt_CTD_dms:
+    print(waypoint)
+
+wpt_drifters_May9_dms = [
+    f"{decimal_to_dms(lat, 'N', 'S')}, {decimal_to_dms(lon, 'E', 'W')}"
+    for lat, lon in zip(wpt_drifters_May9['lat'], wpt_drifters_May9['lon'])
+]
+print("Drifter waypoints in DMS format (lat, lon):")
+for waypoint in wpt_drifters_May9_dms:
+    print(waypoint)
 
 # %%
 
@@ -148,20 +205,20 @@ else:
 ds_ssh = xr.open_dataset('../data/external/aviso.nc')
 
 # %%
-def add_vel_quiver(tind,ax=plt.gca()):
+# Reverted the add_vel_quiver function to its original state
+
+def add_vel_quiver(tind, ax=plt.gca()):
     if ax is None:
         ax = plt.gca()
 
-    u = np.squeeze(ds_ssh.ugos.isel(time=tind)) #dtype=object
+    u = np.squeeze(ds_ssh.ugos.isel(time=tind))  # dtype=object
     v = np.squeeze(ds_ssh.vgos.isel(time=tind))
     skip = 3
     scalefac = 10
-    q = ax.quiver(ds_ssh.longitude.values[::skip], ds_ssh.latitude.values[::skip], u.values[::skip,::skip], v.values[::skip,::skip], scale=scalefac, transform=ccrs.PlateCarree())
+    q = ax.quiver(ds_ssh.longitude.values[::skip], ds_ssh.latitude.values[::skip], u.values[::skip, ::skip], v.values[::skip, ::skip], scale=scalefac, transform=ccrs.PlateCarree())
     x0 = 81.5
     y0 = 17.33
-    ax.quiverkey(q,x0,y0,0.25, '0.25 m/s', zorder=3, transform=ccrs.PlateCarree())
-    #ax.quiver(np.array([x0]), np.array([y0]), -np.array([0.25/np.sqrt(2)],), np.array([0.25/np.sqrt(2)]), scale=scalefac, transform=ccrs.PlateCarree(),zorder=3)
-    #ax.text(x0+3/60, y0+.15/60, '0.25 m/s', fontsize=6,transform=ccrs.PlateCarree())
+    ax.quiverkey(q, x0, y0, 0.25, '0.25 m/s', zorder=5, transform=ccrs.PlateCarree())
 
 
 ######################
@@ -263,10 +320,13 @@ gdf = gpd.read_file(shapefile)
 # Plot the shapefile on the map
 fig, ax = plt.subplots(subplot_kw={'projection': ccrs.PlateCarree()})  # Define ax with cartopy projection
 plt.set_cmap(cmap=plt.get_cmap('turbo'))
-levels = np.arange(29.5, 31.25, 0.25)
+levels = np.arange(29.5, 31.5, 0.25)
 
 # Plot the SST map on the same axis
 ax, site_2024 = plot_map(sst, levels, title='SST,' + t1, savefig=False, ax=ax)
+
+# Add the NRL target point
+# nrl_point = ax.plot(NRL_target['lon'], NRL_target['lat'], 'o', color='g', markeredgecolor='w', markersize=8, transform=ccrs.PlateCarree(), label='NRL target')
 
 # Plot the BD/RAMA moorings
 bd = ax.plot(pts_lon, pts_lat, 'o', color='m', markeredgecolor='k', markersize=8, transform=ccrs.PlateCarree(), label='BD/RAMA moorings')
@@ -286,9 +346,17 @@ ax.set_xlabel('Longitude')
 ax.set_ylabel('Latitude')
 ax.set_xlim(xmin, xmax)
 ax.set_ylim(ymin, ymax)
-next_wpt = plt.plot(wpt['lon'], wpt['lat'], 'o', color='r', markeredgecolor='w', markersize=8, transform=ccrs.PlateCarree(), label='Current waypoint')
+
+# Move the first 4 values of wpt to a variable called wpt_old
+wpt_old = dict(lon=wpt['lon'][:4], lat=wpt['lat'][:4])
+wpt = dict(lon=wpt['lon'][4:], lat=wpt['lat'][4:])
+
+# Update the plotting to include old_wpt points in grey with a different legend entry
+next_wpt = plt.plot(wpt['lon'], wpt['lat'], 'o', color='r', markeredgecolor='w', markersize=8, transform=ccrs.PlateCarree(), label='Current waypoints')
+old_wpt = plt.plot(wpt_old['lon'], wpt_old['lat'], 'o', color='grey', markeredgecolor='w', markersize=8, transform=ccrs.PlateCarree(), label='Old waypoints')
+
 tgt = plt.plot(longitudes, latitudes, 'o', color='b', markeredgecolor='w', markersize=8, transform=ccrs.PlateCarree(), label='Ship Position')
-plt.legend([site_2024[0], bd[0], next_wpt[0], tgt[0]], ['2024 site', 'BD/RAMA moorings', 'Current waypoint', 'Ship Position'], loc='upper right', framealpha=0.8)
+plt.legend([site_2024[0], bd[0], next_wpt[0], old_wpt[0], tgt[0]], ['2024 site', 'BD/RAMA moorings', 'Current waypoints', 'Old waypoints', 'Ship Position'], loc='upper right', framealpha=0.8)
 
 #plt.legend(framealpha=0.8)
 plt.show()
@@ -313,6 +381,14 @@ add_vel_quiver(tind, ax=ax)
 
 # remove all whitespace
 plt.subplots_adjust(left=0, right=1, top=1, bottom=0)
+# Get axis limits to restore after plotting EEZ
+xmin, xmax = ax.get_xlim()
+ymin, ymax = ax.get_ylim()
+# Add EEZ
+gdf.plot(ax=ax, color='none', edgecolor='black', linewidth=2, alpha=0.9, transform=ccrs.PlateCarree(), zorder=2)
+# restore axis limits
+ax.set_xlim(xmin, xmax)
+ax.set_ylim(ymin, ymax)
 if savefig:
     outfile2 = 'KML_SST_UV_map_' + t1.replace(' ', '_')
     plt.savefig(__figdir__ + outfile2 + '.' + plotfiletype, **kml_savefig_args)
@@ -349,6 +425,9 @@ gl = ax.gridlines(draw_labels=True, dms=True, x_inline=False, y_inline=False, al
 gl.top_labels = False
 gl.right_labels = False
 
+# Add the NRL target point
+# nrl_point = ax.plot(NRL_target['lon'], NRL_target['lat'], 'o', color='g', markeredgecolor='w', markersize=8, transform=ccrs.PlateCarree(), label='NRL target')
+
 # Add titles and labels
 ax.set_title(f'SST Difference: {t1} minus {t2}')
 ax.set_xlabel('Longitude')
@@ -366,10 +445,11 @@ for i in range(len(pts_lon)):
 site_2024 = ax.plot(mooring['lon'], mooring['lat'], 'o', color='k', markeredgecolor='w', markersize=8, transform=ccrs.PlateCarree(), label='2024 site')
 
 add_vel_quiver(tind, ax=ax)
-# Plot the current waypoint and ship
-next_wpt = plt.plot(wpt['lon'], wpt['lat'], 'o', color='r', markeredgecolor='w', markersize=8, transform=ccrs.PlateCarree(), label='Current waypoint')
+# Plot the Current waypoints and ship
+next_wpt = plt.plot(wpt['lon'], wpt['lat'], 'o', color='r', markeredgecolor='w', markersize=8, transform=ccrs.PlateCarree(), label='Current waypoints')
+old_wpt = plt.plot(wpt_old['lon'], wpt_old['lat'], 'o', color='grey', markeredgecolor='w', markersize=8, transform=ccrs.PlateCarree(), label='Old waypoints')
 tgt = plt.plot(longitudes, latitudes, 'o', color='b', markeredgecolor='w', markersize=8, transform=ccrs.PlateCarree(), label='Ship Position')
-plt.legend([site_2024[0], bd[0], next_wpt[0], tgt[0]], ['2024 site', 'BD/RAMA moorings', 'Current waypoint', 'Ship Position'], loc='upper right', framealpha=0.8)
+plt.legend([site_2024[0], bd[0], next_wpt[0], old_wpt[0], tgt[0]], ['2024 site', 'BD/RAMA moorings', 'Current waypoints', 'Old waypoints', 'Ship Position'], loc='upper right', framealpha=0.8)
 
 
 plt.show()
@@ -389,6 +469,14 @@ add_vel_quiver(tind, ax=ax)
 
 # remove all whitespace
 plt.subplots_adjust(left=0, right=1, top=1, bottom=0)
+# Get axis limits to restore after plotting EEZ
+xmin, xmax = ax.get_xlim()
+ymin, ymax = ax.get_ylim()
+# Add EEZ
+gdf.plot(ax=ax, color='none', edgecolor='black', linewidth=2, alpha=0.9, transform=ccrs.PlateCarree(), zorder=2)
+# restore axis limits
+ax.set_xlim(xmin, xmax)
+ax.set_ylim(ymin, ymax)
 if savefig:
     outfile2 = 'KML_Delta_SST_UV_map_' + t1.replace(' ', '_')
     plt.savefig(__figdir__ + outfile2 + '.' + plotfiletype, **kml_savefig_args)
@@ -399,10 +487,11 @@ functions.create_kml_file(kml_name=__figdir__ + outfile2, overlay_name='Delta_SS
 
 # %%
 
-# Plot the current waypoint and ship
-next_wpt = plt.plot(wpt['lon'], wpt['lat'], 'o', color='r', markeredgecolor='w', markersize=8, transform=ccrs.PlateCarree(), label='Current waypoint')
+# Plot the Current waypoints and ship
+next_wpt = plt.plot(wpt['lon'], wpt['lat'], 'o', color='r', markeredgecolor='w', markersize=8, transform=ccrs.PlateCarree(), label='Current waypoints')
+old_wpt = plt.plot(wpt_old['lon'], wpt_old['lat'], 'o', color='grey', markeredgecolor='w', markersize=8, transform=ccrs.PlateCarree(), label='Old waypoints')
 tgt = plt.plot(longitudes, latitudes, 'o', color='b', markeredgecolor='w', markersize=8, transform=ccrs.PlateCarree(), label='Ship Position')
-plt.legend([site_2024, bd[0], next_wpt[0], tgt[0]], ['2024 site', 'BD/RAMA moorings', 'Current waypoint', 'Ship Position'], loc='upper right', framealpha=0.8)
+plt.legend([site_2024, bd[0], next_wpt[0], old_wpt[0], tgt[0]], ['2024 site', 'BD/RAMA moorings', 'Current waypoints', 'Old waypoints', 'Ship Position'], loc='upper right', framealpha=0.8)
 
 
 
@@ -411,12 +500,16 @@ plt.legend([site_2024, bd[0], next_wpt[0], tgt[0]], ['2024 site', 'BD/RAMA moori
 
 
 # %%
-# Export the current waypoint to a KML file; this differs from the other function 
+# Export the Current waypoints to a KML file; this differs from the other function 
 # because it only does the waypoints
 
 # %%
-# Create a KML file for the current waypoint
+# Create a KML file for the Current waypoints and NRL target
 functions.waypoints_to_kml(kml_name=__figdir__ + 'current_waypoint', wpt=wpt)
+functions.waypoints_to_kml(kml_name=__figdir__ + 'old_waypoint', wpt=wpt_old)
+# Add the NRL target to the KML file
+#functions.points_to_kml(kml_name=__figdir__ + 'NRL_target', wpt=NRL_target,pt_label='NRL target')
+
 
 # %%
 # Make a plot of current speed and direction
@@ -455,12 +548,15 @@ for i in range(len(pts_lon)):
     ax.text(pts_lon[i] + 0.1, pts_lat[i] + 0.1, BD[i], fontsize=12, color='w', transform=ccrs.PlateCarree(), zorder=4)
 # Add the 2024 site
 site_2024 = ax.plot(mooring['lon'], mooring['lat'], 'o', color='k', markeredgecolor='w', markersize=8, transform=ccrs.PlateCarree(), label='2024 site')
+# nrl_point = ax.plot(NRL_target['lon'], NRL_target['lat'], 'o', color='g', markeredgecolor='w', markersize=8, transform=ccrs.PlateCarree(), label='NRL target')
+
 # Add the EEZ boundaries
 gdf.plot(ax=ax, color='none', edgecolor='black', linewidth=2, alpha=0.9, transform=ccrs.PlateCarree(), zorder=2)
-# Add the current waypoint and ship
-next_wpt = plt.plot(wpt['lon'], wpt['lat'], 'o', color='r', markeredgecolor='w', markersize=8, transform=ccrs.PlateCarree(), label='Current waypoint')
+# Add the Current waypoints and ship
+next_wpt = plt.plot(wpt['lon'], wpt['lat'], 'o', color='r', markeredgecolor='w', markersize=8, transform=ccrs.PlateCarree(), label='Current waypoints')
+old_wpt = plt.plot(wpt_old['lon'], wpt_old['lat'], 'o', color='grey', markeredgecolor='w', markersize=8, transform=ccrs.PlateCarree(), label='Old waypoints')
 tgt = plt.plot(longitudes, latitudes, 'o', color='b', markeredgecolor='w', markersize=8, transform=ccrs.PlateCarree(), label='Ship Position')
-plt.legend([site_2024[0], bd[0], next_wpt[0], tgt[0]], ['2024 site', 'BD/RAMA moorings', 'Current waypoint', 'Ship Position'], loc='upper right', framealpha=0.8)
+plt.legend([site_2024[0], bd[0], next_wpt[0], old_wpt[0], tgt[0]], ['2024 site', 'BD/RAMA moorings', 'Current waypoints', 'Old waypoints', 'Ship Position'], loc='upper right', framealpha=0.8)
 plt.show()
 if savefig:
     outfile2 = 'Current_Speed_map_' + t1.replace(' ', '_')
@@ -475,6 +571,14 @@ cs = ax.pcolormesh(ds_ssh.longitude, ds_ssh.latitude, speed, vmin=0, vmax=0.75, 
 add_vel_quiver(tind, ax=ax)
 # remove all whitespace
 plt.subplots_adjust(left=0, right=1, top=1, bottom=0)
+# Get axis limits to restore after plotting EEZ
+xmin, xmax = ax.get_xlim()
+ymin, ymax = ax.get_ylim()
+# Add EEZ
+gdf.plot(ax=ax, color='none', edgecolor='black', linewidth=2, alpha=0.9, transform=ccrs.PlateCarree(), zorder=2)
+# restore axis limits
+ax.set_xlim(xmin, xmax)
+ax.set_ylim(ymin, ymax)
 if savefig:
     outfile2 = 'KML_Current_Speed_map_' + t1.replace(' ', '_')
     plt.savefig(__figdir__ + outfile2 + '.' + plotfiletype, **kml_savefig_args)
