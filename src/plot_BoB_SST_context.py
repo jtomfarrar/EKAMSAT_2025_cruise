@@ -57,6 +57,8 @@ url = 'https://psl.noaa.gov/thredds/fileServer/Datasets/noaa.oisst.v2.highres/ss
 
 
 filename = os.path.join(data_dir, os.path.basename(url))
+# Commenting out since cruise is over:
+'''
 if not os.path.exists(filename):
     import urllib.request
     urllib.request.urlretrieve(url, filename)
@@ -78,7 +80,7 @@ else: # check if the file is older than 0.5 days
     if age.total_seconds() > 43200:  # 0.5 days in seconds
         print("File is older than 0.5 days, downloading again")
         urllib.request.urlretrieve(url, filename)
-
+'''
 
 
 # %%
@@ -344,7 +346,7 @@ ax.set_xlim(xmin, xmax)
 ax.set_ylim(ymin, ymax)
 
 # Move the first X values of wpt to a variable called wpt_old
-X=16
+X=18
 wpt_old = dict(lon=wpt['lon'][:X], lat=wpt['lat'][:X])
 wpt = dict(lon=wpt['lon'][X:], lat=wpt['lat'][X:])
 

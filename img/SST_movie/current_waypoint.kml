@@ -12,46 +12,10 @@
                 </Icon>
             </IconStyle>
         </Style>
-        <Style id="89">
-            <IconStyle id="90">
-                <color>ff0000ff</color>
-                <colorMode>normal</colorMode>
-                <scale>1.5</scale>
-                <heading>0</heading>
-                <Icon id="91">
-                    <href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
-                </Icon>
-            </IconStyle>
-        </Style>
-        <Style id="94">
-            <IconStyle id="95">
-                <color>ff0000ff</color>
-                <colorMode>normal</colorMode>
-                <scale>1.5</scale>
-                <heading>0</heading>
-                <Icon id="96">
-                    <href>http://maps.google.com/mapfiles/kml/shapes/placemark_circle.png</href>
-                </Icon>
-            </IconStyle>
-        </Style>
         <Placemark id="83">
             <name>Waypoint</name>
             <styleUrl>#84</styleUrl>
             <Point id="82">
-                <coordinates>86.5,11.5,0.0</coordinates>
-            </Point>
-        </Placemark>
-        <Placemark id="88">
-            <name>Waypoint</name>
-            <styleUrl>#89</styleUrl>
-            <Point id="87">
-                <coordinates>86.5,12,0.0</coordinates>
-            </Point>
-        </Placemark>
-        <Placemark id="93">
-            <name>Waypoint</name>
-            <styleUrl>#94</styleUrl>
-            <Point id="92">
                 <coordinates>87.67,13.25,0.0</coordinates>
             </Point>
         </Placemark>
