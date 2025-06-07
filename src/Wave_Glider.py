@@ -107,8 +107,11 @@ ax[5].set_ylim([410,470])
 # %% Call in the RAMA mooring data
 directory = '../data/external/RAMA_12/';
 variables_RAMA = ["WS_401","RH_910","AT_21","RN_485","RD_495"]
-variables_WHOI1102 = ["TrueWindSpeed_Avg","HC2A_RH","HC2A_ATMP", "rain_intensity_Avg","SMP21_SW_Flux_Avg"]
-# variables_WHOI1102 = ["TrueWindSpeed_Avg","relative_humidity_Avg","atmospheric_temperature_Avg", "rain_intensity_Avg","SMP21_SW_Flux_Avg"]
+use_WXT = True
+if use_WXT:
+    variables_WHOI1102 = ["TrueWindSpeed_Avg","relative_humidity_Avg","atmospheric_temperature_Avg", "rain_intensity_Avg","SMP21_SW_Flux_Avg"]
+else:
+    variables_WHOI1102 = ["TrueWindSpeed_Avg","HC2A_RH","HC2A_ATMP", "rain_intensity_Avg","SMP21_SW_Flux_Avg"]
 WG = ["WHOI1102"]
 ylabel = ["wS (m/s)","RH (%)","AT($^\circ$C)","Rain(mm/h)","SWR(W/m$^2$)"]
 Time = xr.open_dataset(directory+'met12n90e_hr.cdf');
@@ -121,14 +124,14 @@ fig, ax = plt.subplots(5,1,figsize=(12,12), sharex=True, sharey=False)
 for i in range(len(variables_RAMA)):
     ax[i].plot(Time["time"],All_vars[variables_RAMA[i]].sel(lat=12,lon=90).squeeze(),color='black',label="RAMA-12$^\circ$N (hourly)")
     Struct = WHOI1102["WHOI1102"];
-    if i==0:
+    if i==0 and not use_WXT:
         data = Struct.PLD1_TAB1
     else:
         data = Struct.PLD2_TAB1
     ax[i].set_xlim([datetime.datetime(2025,5,7,12,0,0),time_series[-1]])
     ax[i].set_ylabel(ylabel[i],fontsize=14)
     ax[i].grid(True)
-    if i==0:
+    if i==0 and not use_WXT:
         time0 = [datenum_to_datetime(dn) for dn in WHOI1102["WHOI1102"].PLD2_TAB1.time if not np.isnan(dn)]
         ax[i].plot(time0[0:-1],getattr(Struct.PLD1_TAB1, variables_WHOI1102[i]),label = "WHOI1102 (15 min)",color="orange")
     else:
@@ -154,7 +157,6 @@ ax[0].set_xlim([datetime.datetime(2025,5,7,12,0,0),IDA_datetime[-1]]);
 cbar = fig.colorbar(mesh, ax=ax[0])
 cbar.set_label("Temperature (°C)")
 #fig.autofmt_xdate()
-
 
 
 start_date = np.datetime64(datetime.datetime(2025, 5, 10,2,0,0))
