@@ -402,3 +402,45 @@ ax[2].invert_yaxis()
 fig.autofmt_xdate()
 
 # %%
+# Now make a T-S plot for PLANCK
+fig, ax = plt.subplots(1, 1, figsize=(8,6))
+# Convert PLANCK_datetime to np.array of datetime64
+t = np.array(PLANCK_datetime)
+foo = t-t[0]
+# convert time to days since the start of the cruise
+t = foo.astype('timedelta64[D]').astype(int)
+mesh = ax.scatter(SA, CT, c=t, cmap='turbo', s=1)  # <-- axes reversed here
+cbar = fig.colorbar(mesh, ax=ax)
+cbar.set_label("Days since deployment")
+
+ax.set_xlabel('Absolute salinity (g/kg)')
+ax.set_ylabel('Conservative temperature ($^\circ C$)')
+ax.set_title('Planck T-S plot')
+ax.set_xlim([32.5, 35.3])
+ax.set_ylim([20, 33])
+xlim = ax.get_xlim()
+ylim = ax.get_ylim()
+
+# Draw isopycnals
+s_grid = np.linspace(xlim[0], xlim[1], 100)
+t_grid = np.linspace(ylim[0], ylim[1], 200)
+S_grid, T_grid = np.meshgrid(s_grid, t_grid)
+SA_grid = gsw.SA_from_SP(S_grid, 0, lon=88, lat=13)
+CT_grid = gsw.CT_from_t(SA_grid, T_grid, 0)
+rho_grid = gsw.rho(SA_grid, CT_grid, 0)
+ax.grid(True)
+cs = ax.contour(S_grid, T_grid, rho_grid-1000, colors='k', levels=np.arange(20, 30, 0.5), linewidths=0.8)
+label_positions = []
+for collection in cs.collections:
+    for path in collection.get_paths():
+        verts = path.vertices
+        if len(verts) > 0:
+            mid_idx = len(verts) // 2
+            label_positions.append(verts[mid_idx])
+
+# Add labels at the calculated midpoint positions
+plt.clabel(cs, fmt='%1.1f', fontsize=12, manual=label_positions)
+
+# %%
+
+# %%
