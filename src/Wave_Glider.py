@@ -95,7 +95,7 @@ for i in range(len(variables)):
             else:
                 ax[i].plot(time_series,getattr(data, variables[i]),label = Assets[j],color=colors[j])
 
-ax[0].set_ylim([0,10])
+ax[0].set_ylim([0,18])
 ax[3].legend(loc='upper center',ncols=2,fontsize=12)
 ax[1].set_ylim([60,100])
 ax[2].set_ylim([26,33])
