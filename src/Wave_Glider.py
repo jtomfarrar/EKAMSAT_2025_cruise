@@ -14,6 +14,14 @@ import matplotlib.dates as mdates
 # %% Mounting google drive
 # sudo mkdir /mnt/g
 # sudo mount -t drvfs G: /mnt/g
+
+# %%
+# %matplotlib inline
+%matplotlib widget
+# %matplotlib qt5
+plt.rcParams['figure.figsize'] = (6,6)
+plt.rcParams['figure.dpi'] = 100
+plt.rcParams['savefig.dpi'] = 400
 # %% Acess the files
 directory = "../../../../mnt/g/Shared\ drives/AirSeaLab_Shared/ASTRAL_2025/PAYLOAD/MAT/";
 Assets = ['IDA','PLANCK','WHOI43','WHOI1102'];
@@ -59,9 +67,8 @@ datetime_concat = {
     'WHOI1102_datetime': WHOI1102_datetime
 }
 # %% Plotting the maps
-variables = ["TrueWindSpeed_Avg","relative_humidity_Avg","atmospheric_temperature_Avg",
-             "rain_intensity_Avg","SMP21_SW_Flux_Avg",
-             "SGR4_LW_Flux_Avg"]
+#variables = ["TrueWindSpeed_Avg","relative_humidity_Avg","atmospheric_temperature_Avg", "rain_intensity_Avg","SMP21_SW_Flux_Avg", "SGR4_LW_Flux_Avg"]
+variables = ["TrueWindSpeed_Avg","relative_humidity_Avg","atmospheric_temperature_Avg", "rain_intensity_Avg","SMP21_SW_Flux_Avg", "SGR4_LW_Flux_Avg"]
 colors = ["red","blue","teal","orange"]
 ylabel = ["wS (m/s)","Rh (%)","AT($^o$C)","Rain(mm/h)","SWR(W/m$^2$)","LWR(W/m$^2$)"]
 fig, ax = plt.subplots(6, 1, figsize=(12,14))
@@ -100,46 +107,54 @@ ax[5].set_ylim([410,470])
 # %% Call in the RAMA mooring data
 directory = '../data/external/RAMA_12/';
 variables_RAMA = ["WS_401","RH_910","AT_21","RN_485","RD_495"]
-variables_WHOI1102 = ["TrueWindSpeed_Avg","relative_humidity_Avg","atmospheric_temperature_Avg",
-             "rain_intensity_Avg","SMP21_SW_Flux_Avg"]
+variables_WHOI1102 = ["TrueWindSpeed_Avg","HC2A_RH","HC2A_ATMP", "rain_intensity_Avg","SMP21_SW_Flux_Avg"]
+# variables_WHOI1102 = ["TrueWindSpeed_Avg","relative_humidity_Avg","atmospheric_temperature_Avg", "rain_intensity_Avg","SMP21_SW_Flux_Avg"]
 WG = ["WHOI1102"]
-ylabel = ["wS (m/s)","Rh (%)","AT($^o$C)","Rain(mm/h)","SWR(W/m$^2$)"]
-Time = xr.open_dataset(directory+'airt12n90e_hr.cdf');
-list = [directory+'airt12n90e_hr.cdf',directory+'rad12n90e_hr.cdf',
-        directory+'rh12n90e_hr.cdf',directory+"rain12n90e_hr.cdf",
-        directory+'sst12n90e_hr.cdf',directory+'w12n90e_hr.cdf'];
+ylabel = ["wS (m/s)","RH (%)","AT($^\circ$C)","Rain(mm/h)","SWR(W/m$^2$)"]
+Time = xr.open_dataset(directory+'met12n90e_hr.cdf');
+# list = [directory+'airt12n90e_hr.cdf',directory+'rad12n90e_hr.cdf', directory+'rh12n90e_hr.cdf',directory+"rain12n90e_hr.cdf", directory+'sst12n90e_hr.cdf',directory+'w12n90e_hr.cdf'];
+list = [directory+'met12n90e_hr.cdf',directory+'rad12n90e_hr.cdf', directory+"rain12n90e_hr.cdf", directory+'sss12n90e_hr.cdf'];
 ds_combined = xr.open_mfdataset(list, combine='by_coords')
-All_vars = ds_combined.set_coords(['time', 'lat', 'lon','depth'])
+All_vars = ds_combined.set_coords(['time','depth', 'lat', 'lon'])
 depth_values = [-4,-3,-3,-4,-4]
-fig, ax = plt.subplots(5,1,figsize=(12,12))
+fig, ax = plt.subplots(5,1,figsize=(12,12), sharex=True, sharey=False)
 for i in range(len(variables_RAMA)):
-    ax[i].plot(Time["time"],All_vars[variables_RAMA[i]].sel(depth=depth_values[i],lat=12,lon=90),color='black',label="RAMA-12$^o$N (hourly)")
+    ax[i].plot(Time["time"],All_vars[variables_RAMA[i]].sel(lat=12,lon=90).squeeze(),color='black',label="RAMA-12$^\circ$N (hourly)")
     Struct = WHOI1102["WHOI1102"];
-    data = Struct.PLD2_TAB1;
+    if i==0:
+        data = Struct.PLD1_TAB1
+    else:
+        data = Struct.PLD2_TAB1
     ax[i].set_xlim([datetime.datetime(2025,5,7,12,0,0),time_series[-1]])
     ax[i].set_ylabel(ylabel[i],fontsize=14)
     ax[i].grid(True)
-    ax[i].plot(time_series,getattr(data, variables_WHOI1102[i]),label = "WHOI1102 (15 min)",color="orange")
+    if i==0:
+        time0 = [datenum_to_datetime(dn) for dn in WHOI1102["WHOI1102"].PLD2_TAB1.time if not np.isnan(dn)]
+        ax[i].plot(time0[0:-1],getattr(Struct.PLD1_TAB1, variables_WHOI1102[i]),label = "WHOI1102 (15 min)",color="orange")
+    else:
+        ax[i].plot(time_series,getattr(data, variables_WHOI1102[i]),label = "WHOI1102 (15 min)",color="orange")
     ax[i].set_ylabel(ylabel[i],fontsize=14)
     ax[i].axvline(datetime.datetime(2025,5,10,20,0,0),linewidth=1.5,linestyle="--",color="orange")
     ax[i].axvline(datetime.datetime(2025,5,11,4,0,0),linewidth=1.5,linestyle="--",color="orange")
 ax[0].legend(loc='upper center',ncols=2,fontsize=12)
-ax[0].set_ylim([0,10])
+ax[0].set_ylim([0,17])
 ax[1].set_ylim([60,100])
 ax[2].set_ylim([26,33])
 ax[3].set_ylim([0,30])
 #ax[4].set_ylim([30,34])
 ax[4].set_ylim([0,1200])
+
+
 # %% load the surface T(z) data from IDA and WHOI43
 levels=np.arange(30,32,0.1)
-fig, ax = plt.subplots(2, 1, figsize=(10,8))
+fig, ax = plt.subplots(2, 1, figsize=(10,8),sharex=True)
 mesh = ax[0].contourf(IDA_datetime,IDA["IDA"].PLD2_TAB1.z_tchn_temp[:,0],
                  IDA["IDA"].PLD2_TAB1.tchn_temp,levels=levels,cmap='turbo',extend="both");
 ax[0].set_xlim([datetime.datetime(2025,5,7,12,0,0),IDA_datetime[-1]]);
 cbar = fig.colorbar(mesh, ax=ax[0])
 cbar.set_label("Temperature (°C)")
-ax[0].xaxis.set_major_locator(mdates.DayLocator(interval = 1))
-ax[0].xaxis.set_major_formatter(mdates.DateFormatter('%d.%m'))
+#fig.autofmt_xdate()
+
 
 
 start_date = np.datetime64(datetime.datetime(2025, 5, 10,2,0,0))
@@ -154,13 +169,14 @@ mesh = ax[1].contourf(WHOI43_datetime,WHOI43["WHOI43"].PLD2_TAB1.z_tchn_temp[:,0
 ax[1].set_xlim([datetime.datetime(2025,5,7,12,0,0),WHOI43_datetime[-1]]);
 cbar = fig.colorbar(mesh, ax=ax[1])
 cbar.set_label("Temperature (°C)")
-ax[1].xaxis.set_major_locator(mdates.DayLocator(interval = 1))
-ax[1].xaxis.set_major_formatter(mdates.DateFormatter('%d.%m'))
-
+fig.autofmt_xdate()
 
 ax[0].set_ylim([-50,0])
 ax[1].set_ylim([-50,0])
-
+ax[0].set_title("IDA T(z)")
+ax[1].set_title("WHOI43 T(z)")
+ax[0].set_ylabel("Depth (m)")
+ax[1].set_ylabel("Depth (m)")
 
 # %% plot the RBR sensor from 
 # %% PLANCK RBR data
@@ -229,11 +245,11 @@ else:
     levels = np.linspace(-.3,.3,51)
 ds = xr.open_dataset('../data/external/aviso.nc')
 # %% EEZ
-import scipy.io
+'''import scipy.io
 mat_data = scipy.io.loadmat('../data/external/World_EEZ/eez.mat')
 eez = mat_data['eez'];
 eez = np.array(eez)
-
+'''
 # %% Plotting script
 def plot_SSH_map(tind):
     plt.clf()
@@ -242,7 +258,7 @@ def plot_SSH_map(tind):
     day_str = np.datetime_as_string(ds.time[tind], unit='D')
     ax.set_extent(extent, crs=ccrs.PlateCarree())
     ax.set_title('Current Velocity magnitude (DUACS), '+ day_str,size = 10.)
-    ax.plot(eez[:,0], eez[:,1], 'w-', linewidth=1, transform=ccrs.PlateCarree(), zorder=3,label='EEZ')
+#    ax.plot(eez[:,0], eez[:,1], 'w-', linewidth=1, transform=ccrs.PlateCarree(), zorder=3,label='EEZ')
 
     #plt.set_cmap(cmap=plt.get_cmap('nipy_spectral'))
     plt.set_cmap(cmap=plt.get_cmap('turbo'))
@@ -346,6 +362,43 @@ def day_extract(date64):
 Day_array = [day_extract(i) for i in cbar_ticklabels]
 cbar.ax.set_yticks(cbar_ticks)
 cbar.ax.set_yticklabels(Day_array)
-ax.set_xlabel('Temperature ($^oC)')
+ax.set_xlabel('Temperature ($^circC$)')
 ax.set_ylabel('Salinity')
+# %%
+# Plot Planck CTD versus time
+fig, ax = plt.subplots(3, 1, figsize=(8,5),sharex=True)
+# set the color scale for the scatter plot to span temperatures of 20 to 32 degrees Celsius
+levels = np.arange(20, 32, 0.5)
+mesh = ax[0].scatter(PLANCK_datetime,PLANCK["PLANCK"].PLD2_TAB4.rbr_depth_Avg.T, 1, c=PLANCK["PLANCK"].PLD2_TAB4.rbr_temp_Avg, vmin=levels[0], vmax=levels[-1], cmap='turbo')
+cbar = fig.colorbar(mesh, ax=ax[0])
+cbar.set_label("T ($^\circ C$)")
+
+ax[0].set_ylabel('Depth (m)')
+ax[0].set_title('Planck winched CTD')
+ax[0].set_ylim([0, 150])
+ax[0].invert_yaxis()
+
+# Salinity
+levels = np.arange(32, 35, 0.1)
+mesh = ax[1].scatter(PLANCK_datetime,PLANCK["PLANCK"].PLD2_TAB4.rbr_depth_Avg.T, 1, c=PLANCK["PLANCK"].PLD2_TAB4.rbr_sali_Avg, vmin=32, vmax=35, cmap='viridis')
+cbar = fig.colorbar(mesh, ax=ax[1])
+cbar.set_label("Salinity (g/kg)")
+ax[1].set_ylabel('Depth (m)')
+ax[1].set_ylim([0, 150])
+ax[1].invert_yaxis()
+# Potential density
+SA = gsw.SA_from_SP(PLANCK["PLANCK"].PLD2_TAB4.rbr_sali_Avg, PLANCK["PLANCK"].PLD2_TAB4.rbr_depth_Avg.T, lon=88, lat=13)
+CT = gsw.CT_from_t(SA, PLANCK["PLANCK"].PLD2_TAB4.rbr_temp_Avg, PLANCK["PLANCK"].PLD2_TAB4.rbr_depth_Avg.T)
+# Calculate potential density at 0 dbar
+sigma = gsw.density.sigma0(SA, CT)
+levels = np.arange(20, 25, 0.5)
+
+mesh = ax[2].scatter(PLANCK_datetime,PLANCK["PLANCK"].PLD2_TAB4.rbr_depth_Avg.T, 1, c=sigma, vmin=levels[0], vmax=levels[-1], cmap='turbo')
+cbar = fig.colorbar(mesh, ax=ax[2])
+cbar.set_label("$\sigma_0$ (kg/m$^3$)")
+ax[2].set_ylabel('Depth (m)')
+ax[2].set_ylim([0, 150])
+ax[2].invert_yaxis()
+fig.autofmt_xdate()
+
 # %%
